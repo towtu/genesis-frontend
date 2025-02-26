@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { api } from "../services/api";
-import Sidebar from "./Sidebar";
 
 const Settings: React.FC = () => {
   const [settings, setSettings] = useState({
@@ -19,7 +18,6 @@ const Settings: React.FC = () => {
 
   return (
     <div className="flex">
-    <Sidebar/>
         <div className="flex min-h-screen">
         <div className="flex-1 p-8 bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
