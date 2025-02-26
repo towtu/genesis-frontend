@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api"; // Import your configured axios instance
-import Sidebar from "./Sidebar";
 import { BadgeCheck, BadgeMinus } from "lucide-react"; // Import the BadgeCheck icon
 
 const Account: React.FC = () => {
@@ -49,9 +48,6 @@ const Account: React.FC = () => {
 
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <Sidebar />
-
       {/* Main Content */}
       <div className="w-full bg-gray-100">
         <div className="bg-white p-20 shadow-md w-full h-screen ">
