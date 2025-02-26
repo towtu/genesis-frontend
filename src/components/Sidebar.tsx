@@ -1,6 +1,17 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Home, User, Search, Star, CheckCircle, ListChecks, Calendar, Settings, HelpCircle, LogOut } from "lucide-react";
+import {
+  Home,
+  User,
+  Search,
+  Star,
+  CheckCircle,
+  ListChecks,
+  Calendar,
+  Settings,
+  HelpCircle,
+  LogOut,
+} from "lucide-react";
 import { logout } from "../services/api";
 
 const Sidebar: React.FC = () => {
@@ -34,14 +45,15 @@ const Sidebar: React.FC = () => {
   const handleLogout = async () => {
     try {
       await logout();
+      navigate("/login"); // Redirect to login page after logout
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
   return (
-    <div className="bg-blue-200 w-64 min-h-screen p-4 flex flex-col">
-      {/* Search ni Boss */}
+    <div className="bg-blue-200 w-64 h-screen fixed left-0 top-0 flex flex-col p-4">
+      {/* Search Bar */}
       <form onSubmit={handleSearch} className="mb-4">
         <div className="flex items-center gap-2 bg-white rounded-lg p-2">
           <Search size={20} className="text-gray-500" />
@@ -55,14 +67,17 @@ const Sidebar: React.FC = () => {
         </div>
       </form>
 
-      <nav>
+      {/* Menu Items */}
+      <nav className="flex-1 overflow-y-auto">
         <ul className="space-y-1">
           {menuItems.map((item) => (
             <li key={item.name}>
               <Link
                 to={item.path}
                 className={`flex items-center gap-2 p-2 rounded-lg transition-colors ${
-                  location.pathname === item.path ? "bg-blue-300 text-black" : "hover:bg-blue-300"
+                  location.pathname === item.path
+                    ? "bg-blue-300 text-black"
+                    : "hover:bg-blue-300"
                 }`}
               >
                 {item.icon}
@@ -72,14 +87,18 @@ const Sidebar: React.FC = () => {
           ))}
         </ul>
 
+        {/* Task Items */}
         <div className="mt-4">
+          <h3 className="text-sm font-semibold text-gray-700 mb-2">Tasks</h3>
           <ul className="space-y-1">
             {taskItems.map((item) => (
               <li key={item.name}>
                 <Link
                   to={item.path}
                   className={`flex items-center gap-2 p-2 rounded-lg transition-colors ${
-                    location.pathname === item.path ? "bg-blue-300 text-black" : "hover:bg-blue-300"
+                    location.pathname === item.path
+                      ? "bg-blue-300 text-black"
+                      : "hover:bg-blue-300"
                   }`}
                 >
                   {item.icon}
@@ -90,14 +109,18 @@ const Sidebar: React.FC = () => {
           </ul>
         </div>
 
+        {/* Settings Items */}
         <div className="mt-4">
+          <h3 className="text-sm font-semibold text-gray-700 mb-2">Settings</h3>
           <ul className="space-y-1">
             {settingsItems.map((item) => (
               <li key={item.name}>
                 <Link
                   to={item.path}
                   className={`flex items-center gap-2 p-2 rounded-lg transition-colors ${
-                    location.pathname === item.path ? "bg-blue-300 text-black" : "hover:bg-blue-300"
+                    location.pathname === item.path
+                      ? "bg-blue-300 text-black"
+                      : "hover:bg-blue-300"
                   }`}
                 >
                   {item.icon}
@@ -109,9 +132,10 @@ const Sidebar: React.FC = () => {
         </div>
       </nav>
 
+      {/* Logout Button */}
       <button
         onClick={handleLogout}
-        className="mt-auto flex items-center gap-2 bg-blue-200 w-64 hover-text-blue-600"
+        className="mt-4 flex items-center gap-2 p-2 rounded-lg hover:bg-blue-300 transition-colors"
       >
         <LogOut size={20} />
         Logout
