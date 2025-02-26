@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { getDashboard } from '../services/api';
 import { logout } from '../services/api';
 import { Link } from 'react-router-dom';
-import Sidebar from './Sidebar';
 
 const Dashboard: React.FC = () => {
   const [message, setMessage] = useState('');
@@ -32,7 +31,6 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <div className="flex">
-        <Sidebar />
         <div className="min-h-screen flex items-center justify-center bg-gray-100 flex-1">
           <div className="bg-white p-6 rounded shadow-md">
             <h2 className="text-2xl mb-4">Dashboard</h2>
