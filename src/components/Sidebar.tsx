@@ -53,20 +53,6 @@ const Sidebar: React.FC = () => {
 
   return (
     <div className="bg-blue-200 w-64 h-screen fixed left-0 top-0 flex flex-col p-4">
-      {/* Search Bar */}
-      <form onSubmit={handleSearch} className="mb-4">
-        <div className="flex items-center gap-2 bg-white rounded-lg p-2">
-          <Search size={20} className="text-gray-500" />
-          <input
-            type="text"
-            placeholder="Search todos..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 outline-none bg-transparent"
-          />
-        </div>
-      </form>
-
       {/* Menu Items */}
       <nav className="flex-1 overflow-y-auto">
         <ul className="space-y-1">
