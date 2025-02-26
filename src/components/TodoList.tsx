@@ -52,8 +52,9 @@ const TodoList: React.FC = () => {
       await createTodo({
         title: newTodoTitle,
         completed: false,
-        due_date: newTodoDueDate,
+        due_date: newTodoDueDate || null, // Make due_date optional
         status: newTodoStatus,
+        date: null, // Make date optional
       });
       setNewTodoTitle('');
       setNewTodoDueDate('');
@@ -83,8 +84,9 @@ const TodoList: React.FC = () => {
     try {
       await updateTodo(todoId, {
         title: editedTitle,
-        due_date: editedDueDate,
+        due_date: editedDueDate || null, // Make due_date optional
         status: editedStatus,
+        date: null, // Make date optional
       });
       setEditingTodoId(null);
       fetchTodos();

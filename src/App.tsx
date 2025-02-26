@@ -11,6 +11,7 @@ import Completed from './components/Completed';
 import Help from './components/Help';
 import Settings from './components/Settings';
 import Important from './components/Important';
+import CalendarView from './components/CalendarPage';
 
 const App: React.FC = () => {
   return (
@@ -27,6 +28,7 @@ const App: React.FC = () => {
         <Route path="/settings" element={<Settings />} />
         <Route path="/help" element={<Help />} />
         <Route path="/important" element={<Important />} />
+        <Route path="/calendar" element={<CalendarView />} />
       </Routes>
     </Router>
   );

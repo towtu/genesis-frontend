@@ -10,7 +10,6 @@ const api = axios.create({
   },
 });
 
-// Add a request interceptor to include the JWT token in the headers
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('access_token');
@@ -65,19 +64,33 @@ export const markTodoAsCompleted = async (todoId: number) => {
 export const createTodo = async (data: {
   title: string;
   completed: boolean;
-  due_date?: string;
+  due_date?: string | null;  // Make due_date optional
   status?: string;
+  date?: string | null;  // Make date optional
 }) => {
-  return api.post('/todo/', data);
+  return api.post('/todo/', {
+    title: data.title,
+    completed: data.completed,
+    due_date: data.due_date || null,  // Pass null if due_date is not provided
+    status: data.status || 'not_started',  // Default status
+    date: data.date || null,  // Pass null if date is not provided
+  });
 };
 
 export const updateTodo = async (todoId: number, data: {
   title?: string;
   completed?: boolean;
-  due_date?: string;
+  due_date?: string | null;  // Make due_date optional
   status?: string;
+  date?: string | null;  // Make date optional
 }) => {
-  return api.patch(`/todo-detail/${todoId}/`, data);
+  return api.patch(`/todo-detail/${todoId}/`, {
+    title: data.title,
+    completed: data.completed,
+    due_date: data.due_date || null,  // Pass null if due_date is not provided
+    status: data.status,
+    date: data.date || null,  // Pass null if date is not provided
+  });
 };
 
 export const deleteTodo = async (todoId: number) => {
