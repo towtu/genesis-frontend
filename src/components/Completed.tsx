@@ -1,44 +1,69 @@
-import React, { useEffect, useState } from "react";
-import { api } from "../services/api";
+import React, { useEffect, useState } from 'react';
+import { api } from '../services/api';
+
+interface Todo {
+  id: number;
+  title: string;
+  completed: boolean;
+  status: string;
+  mark_as_important?: boolean; // Optional property
+}
 
 const Completed: React.FC = () => {
-  const [completedTodos, setCompletedTodos] = useState<any[]>([]);
+  const [completedTodos, setCompletedTodos] = useState<Todo[]>([]);
 
   useEffect(() => {
-    const fetchCompletedTodos = async () => {
-      try {
-        const response = await api.get("/todo/", {
-          params: { completed: true }, // Pass the query parameter here
-        });
-        console.log("API Response:", response.data); // Debugging line
-        setCompletedTodos(response.data);
-      } catch (error) {
-        console.error("Failed to fetch completed todos:", error);
-      }
-    };
-
     fetchCompletedTodos();
   }, []);
 
+  const fetchCompletedTodos = async () => {
+    try {
+      const response = await api.get('/todo/', {
+        params: { completed: true }, // Fetch only completed todos
+      });
+      setCompletedTodos(response.data);
+    } catch (error) {
+      console.error('Failed to fetch completed todos:', error);
+    }
+  };
+
   return (
     <div className="flex">
-      <div className="flex min-h-screen">
-        <div className="flex-1 p-8 bg-gray-100">
-          <div className="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Completed</h2>
+      <div className="bg-white p-6 rounded shadow-md flex-1">
+        <h2 className="text-3xl text-black mb-4 font-bold">Completed</h2>
+
+        {/* Table Structure */}
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="p-2 text-left">Task Name</th>
+              <th className="p-2 text-left">Status</th>
+            </tr>
+          </thead>
+          <tbody>
             {completedTodos.length > 0 ? (
-              <ul>
-                {completedTodos.map((todo) => (
-                  <li key={todo.id} className="mb-2 p-2 border border-gray-200 rounded-md">
+              completedTodos.map((todo) => (
+                <tr
+                  key={todo.id}
+                  className="border-b border-gray-200 bg-blue-200 hover:bg-blue-400 transition-colors"
+                >
+                  <td className="p-2 flex items-center">
                     <span className="line-through text-gray-500">{todo.title}</span>
-                  </li>
-                ))}
-              </ul>
+                  </td>
+                  <td className="p-2">
+                    <span>{todo.status}</span>
+                  </td>
+                </tr>
+              ))
             ) : (
-              <p>No completed todos found.</p>
+              <tr>
+                <td colSpan={2} className="p-2 text-center">
+                  No completed todos found.
+                </td>
+              </tr>
             )}
-          </div>
-        </div>
+          </tbody>
+        </table>
       </div>
     </div>
   );
