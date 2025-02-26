@@ -31,3 +31,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Light mode (default) */
+body {
+  background-color: white;
+  color: black;
+}
+
+/* Dark mode */
+.dark body {
+  background-color: #1a202c; /* bg-gray-800 */
+  color: white;
+}
