@@ -48,7 +48,7 @@ const Account: React.FC = () => {
   return (
     <div className="flex min-h-full justify-center items-center mx-auto">
       {/* Main Content */}
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+      <div className="bg-white p-8 border border-gray-300 rounded-lg shadow-lg w-full max-w-2xl">
         <h2 className="text-2xl font-bold mb-6 text-center">Profile</h2>
 
         {isEditing ? (
