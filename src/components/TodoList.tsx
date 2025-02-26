@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getTodos, createTodo, updateTodo, deleteTodo, markTodoAsImportant } from '../services/api';
-import Sidebar from './Sidebar';
 import { Plus, Star } from 'lucide-react'; // Import the Star icon
 
 const TodoList: React.FC = () => {
@@ -135,7 +134,6 @@ const TodoList: React.FC = () => {
 
   return (
     <div className="flex">
-      <Sidebar />
       <div className="bg-white p-6 rounded shadow-md flex-1">
         <h2 className="text-2xl text-black mb-4">Todo List</h2>
         <div className="flex gap-2 mb-4">
