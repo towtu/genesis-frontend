@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { api } from "../services/api";
+import Sidebar from "./Sidebar";
 
 const Search: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,6 +17,7 @@ const Search: React.FC = () => {
 
   return (
     <div className="flex">
+    <Sidebar/>
         <div className="flex min-h-screen w-full">
         <div className="h-screen p-8 bg-gray-100 ">
             <div className="bg-white p-8 -lg shadow-md w-full">
