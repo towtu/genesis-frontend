@@ -1,19 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getTodos, createTodo, updateTodo, deleteTodo, markTodoAsImportant } from '../services/api';
-import Sidebar from './Sidebar';
-import { Plus, Star } from 'lucide-react'; // Import the Star icon
+import { Plus, Star, Edit, Trash } from 'lucide-react'; // Import icons
+import Swal from 'sweetalert2'; // Import SweetAlert
+
+interface Todo {
+  id: number;
+  title: string;
+  completed: boolean;
+  due_date: string | null;
+  status: string;
+  mark_as_important?: boolean; // Optional property
+}
 
 const TodoList: React.FC = () => {
-  const [todos, setTodos] = useState<any[]>([]);
-  const [newTodoTitle, setNewTodoTitle] = useState('');
-  const [newTodoDueDate, setNewTodoDueDate] = useState('');
-  const [newTodoStatus, setNewTodoStatus] = useState('not_started');
-  const [isInputEnabled, setIsInputEnabled] = useState(false);
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [newTodoTitle, setNewTodoTitle] = useState<string>('');
+  const [newTodoDueDate, setNewTodoDueDate] = useState<string>('');
+  const [newTodoStatus, setNewTodoStatus] = useState<string>('not_started');
+  const [isInputEnabled, setIsInputEnabled] = useState<boolean>(false);
   const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
-  const [editedTitle, setEditedTitle] = useState('');
-  const [editedDueDate, setEditedDueDate] = useState('');
-  const [editedStatus, setEditedStatus] = useState('not_started');
+  const [editedTitle, setEditedTitle] = useState<string>('');
+  const [editedDueDate, setEditedDueDate] = useState<string>('');
+  const [editedStatus, setEditedStatus] = useState<string>('not_started');
   const location = useLocation();
 
   const searchQuery = new URLSearchParams(location.search).get('search') || '';
@@ -25,7 +34,7 @@ const TodoList: React.FC = () => {
   const fetchTodos = async () => {
     try {
       const response = await getTodos();
-      const filteredTodos = response.data.filter((todo: any) =>
+      const filteredTodos = response.data.filter((todo: Todo) =>
         todo.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setTodos(filteredTodos);
@@ -52,9 +61,9 @@ const TodoList: React.FC = () => {
       await createTodo({
         title: newTodoTitle,
         completed: false,
-        due_date: newTodoDueDate || null, // Make due_date optional
+        due_date: newTodoDueDate || null,
         status: newTodoStatus,
-        date: null, // Make date optional
+        date: null,
       });
       setNewTodoTitle('');
       setNewTodoDueDate('');
@@ -66,7 +75,7 @@ const TodoList: React.FC = () => {
     }
   };
 
-  const handleEditClick = (todo: any) => {
+  const handleEditClick = (todo: Todo) => {
     setEditingTodoId(todo.id);
     setEditedTitle(todo.title);
     setEditedDueDate(todo.due_date || '');
@@ -84,9 +93,9 @@ const TodoList: React.FC = () => {
     try {
       await updateTodo(todoId, {
         title: editedTitle,
-        due_date: editedDueDate || null, // Make due_date optional
+        due_date: editedDueDate || null,
         status: editedStatus,
-        date: null, // Make date optional
+        date: null,
       });
       setEditingTodoId(null);
       fetchTodos();
@@ -96,17 +105,33 @@ const TodoList: React.FC = () => {
   };
 
   const handleDeleteClick = async (todoId: number) => {
-    try {
-      await deleteTodo(todoId);
-      fetchTodos();
-    } catch (error) {
-      console.error('Failed to delete todo', error);
+    // SweetAlert Confirmation
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this task!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteTodo(todoId);
+        fetchTodos();
+        Swal.fire('Deleted!', 'Your task has been deleted.', 'success');
+      } catch (error) {
+        console.error('Failed to delete todo', error);
+        Swal.fire('Error', 'Failed to delete the task.', 'error');
+      }
     }
   };
 
   const handleToggleCompleted = async (todoId: number, completed: boolean) => {
     try {
-      await updateTodo(todoId, { completed: !completed });
+      await updateTodo(todoId, { completed: !completed, status: !completed ? 'completed' : 'not_started' });
       fetchTodos();
     } catch (error) {
       console.error('Failed to toggle todo completion', error);
@@ -116,13 +141,12 @@ const TodoList: React.FC = () => {
   const handleMarkAsImportant = async (todoId: number) => {
     try {
       await markTodoAsImportant(todoId);
-      fetchTodos(); // Refresh the list after marking as important
+      fetchTodos();
     } catch (error) {
       console.error('Failed to mark todo as important:', error);
     }
   };
 
-  // Define the formatDate function
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -136,14 +160,13 @@ const TodoList: React.FC = () => {
 
   return (
     <div className="flex">
-      <Sidebar />
       <div className="bg-white p-6 rounded shadow-md flex-1">
         <h2 className="text-2xl text-black mb-4">Todo List</h2>
         <div className="flex gap-2 mb-4">
           {!isInputEnabled ? (
             <button
               onClick={handleEnableInput}
-              className="text-blue-600 flex gap-1">
+              className="border border-blue-600 text-blue-600 flex gap-1 px-4 py-2 rounded">
               <Plus size={20} className="mt-0.5" />
               <span>New Task</span>
             </button>
@@ -187,44 +210,80 @@ const TodoList: React.FC = () => {
           )}
         </div>
 
-        <div className="space-y-4">
-          {todos.map((todo) => (
-            <div
-              key={todo.id}
-              className="p-4 border border-gray-200 rounded-lg shadow-sm bg-yellow-100 hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={todo.completed}
-                    onChange={() => handleToggleCompleted(todo.id, todo.completed)}
-                    className="mr-2"
-                  />
-
+        {/* Table Structure */}
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="p-2 text-left">Task Name</th>
+              <th className="p-2 text-left">Due Date</th>
+              <th className="p-2 text-left">Status</th>
+              <th className="p-2 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {todos.map((todo) => (
+              <tr
+                key={todo.id}
+                className="border-b border-gray-200 bg-blue-200 hover:bg-blue-400 transition-colors"
+              >
+                <td className="p-2 flex items-center">
                   {editingTodoId === todo.id ? (
                     <>
                       <input
                         type="text"
                         value={editedTitle}
                         onChange={(e) => setEditedTitle(e.target.value)}
-                        className="border border-gray-300 p-2 rounded flex-1"
+                        className="border border-gray-300 p-2 rounded w-full"
                       />
+                    </>
+                  ) : (
+                    <>
+                      {/* Checkbox for Completion */}
                       <input
-                        type="datetime-local"
-                        value={editedDueDate}
-                        onChange={(e) => setEditedDueDate(e.target.value)}
-                        className="border border-gray-300 p-2 rounded"
+                        type="checkbox"
+                        checked={todo.completed}
+                        onChange={() => handleToggleCompleted(todo.id, todo.completed)}
+                        className="mr-2"
                       />
-                      <select
-                        value={editedStatus}
-                        onChange={(e) => setEditedStatus(e.target.value)}
-                        className="border border-gray-300 p-2 rounded"
+                      <span
+                        className={`${todo.completed ? 'line-through text-gray-500' : ''}`}
+                        onClick={() => handleEditClick(todo)}
                       >
-                        <option value="not_started">Not Started</option>
-                        <option value="in_progress">In Progress</option>
-                        <option value="completed">Completed</option>
-                      </select>
+                        {todo.title}
+                      </span>
+                    </>
+                  )}
+                </td>
+                <td className="p-2">
+                  {editingTodoId === todo.id ? (
+                    <input
+                      type="datetime-local"
+                      value={editedDueDate}
+                      onChange={(e) => setEditedDueDate(e.target.value)}
+                      className="border border-gray-300 p-2 rounded w-full"
+                    />
+                  ) : (
+                    <span>{todo.due_date ? formatDate(todo.due_date) : 'No due date'}</span>
+                  )}
+                </td>
+                <td className="p-2">
+                  {editingTodoId === todo.id ? (
+                    <select
+                      value={editedStatus}
+                      onChange={(e) => setEditedStatus(e.target.value)}
+                      className="border border-gray-300 p-2 rounded w-full"
+                    >
+                      <option value="not_started">Not Started</option>
+                      <option value="in_progress">In Progress</option>
+                      <option value="completed">Completed</option>
+                    </select>
+                  ) : (
+                    <span>{todo.status}</span>
+                  )}
+                </td>
+                <td className="p-2 flex gap-2">
+                  {editingTodoId === todo.id ? (
+                    <>
                       <button
                         onClick={() => handleSaveClick(todo.id)}
                         className="bg-green-500 text-white px-2 py-1 rounded"
@@ -239,49 +298,35 @@ const TodoList: React.FC = () => {
                       </button>
                     </>
                   ) : (
-                    <span
-                      className={`flex-1 ${todo.completed ? 'line-through text-gray-500' : ''}`}
-                      onClick={() => handleEditClick(todo)}
-                    >
-                      {todo.title}
-                      {todo.mark_as_important && (
-                        <Star size={16} className="inline ml-2 text-yellow-500" />
-                      )}
-                    </span>
+                    <>
+                      {/* Edit Button */}
+                      <button
+                        onClick={() => handleEditClick(todo)}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        <Edit size={20} />
+                      </button>
+                      {/* Star Button */}
+                      <button
+                        onClick={() => handleMarkAsImportant(todo.id)}
+                        className={`${todo.mark_as_important ? 'text-yellow-500' : 'text-gray-500'} hover:text-yellow-600`}
+                      >
+                        <Star size={20} />
+                      </button>
+                      {/* Delete Button */}
+                      <button
+                        onClick={() => handleDeleteClick(todo.id)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <Trash size={20} />
+                      </button>
+                    </>
                   )}
-                </div>
-
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleMarkAsImportant(todo.id)}
-                    className={`text-yellow-600 ${todo.mark_as_important ? 'font-bold' : ''}`}
-                  >
-                    {todo.mark_as_important ? 'Important ★' : 'Mark as Important'}
-                  </button>
-                  {!editingTodoId && (
-                    <button
-                      onClick={() => handleEditClick(todo)}
-                      className="text-blue-600"
-                    >
-                      Edit
-                    </button>
-                  )}
-                  <button
-                    onClick={() => handleDeleteClick(todo.id)}
-                    className="text-red-600"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-
-              <div className="mt-2 text-sm text-gray-500">
-                <div>Due: {todo.due_date ? formatDate(todo.due_date) : 'No due date'}</div>
-                <div>Status: {todo.status}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
