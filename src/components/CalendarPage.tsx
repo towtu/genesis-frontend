@@ -3,7 +3,6 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { api } from '../services/api';
-import Sidebar from './Sidebar';
 import ReactTooltip from 'react-tooltip';
 
 // Set up the localizer for the calendar
@@ -40,7 +39,6 @@ const CalendarView: React.FC = () => {
 
   return (
     <div className="flex">
-      <Sidebar />
       <div className="flex-1 p-8 bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold mb-6">Calendar</h2>
