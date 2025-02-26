@@ -1,7 +1,6 @@
 // Important.tsx
 import React, { useEffect, useState } from "react";
 import { api } from "../services/api";
-import Sidebar from "./Sidebar";
 
 const Important: React.FC = () => {
   const [importantTodos, setImportantTodos] = useState<any[]>([]);
@@ -22,7 +21,6 @@ const Important: React.FC = () => {
 
   return (
     <div className="flex">
-      <Sidebar />
       <div className="flex min-h-screen">
         <div className="flex-1 p-8 bg-gray-100">
           <div className="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
