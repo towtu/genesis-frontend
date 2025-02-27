@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api"; // Import your configured axios instance
 import { BadgeCheck, BadgeMinus, Edit, Save, X, CheckCircle, Clock, Activity } from "lucide-react"; // Import icons
+import { useTheme } from "./ThemeContext"; // Import useTheme
 
 const Account: React.FC = () => {
   const navigate = useNavigate();
+  const { theme } = useTheme(); // Get the current theme
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
     first_name: "",
@@ -61,10 +63,10 @@ const Account: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-full justify-center items-start mx-auto p-6 bg-gray-50 dark:bg-gray-900">
+    <div className={`flex min-h-full justify-center items-start mx-auto p-6 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
       {/* Main Content */}
-      <div className="bg-white dark:bg-gray-800 p-8 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm w-full max-w-4xl">
-        <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Profile</h2>
+      <div className={`p-8 border rounded-lg shadow-sm w-full max-w-4xl ${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+        <h2 className={`text-2xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Profile</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Left Column: Profile Information */}
@@ -73,7 +75,7 @@ const Account: React.FC = () => {
               <form className="space-y-6">
                 {/* First Name */}
                 <div>
-                  <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label htmlFor="first_name" className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                     First Name
                   </label>
                   <input
@@ -82,13 +84,13 @@ const Account: React.FC = () => {
                     name="first_name"
                     value={profile.first_name}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+                    className={`mt-1 block w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-black'}`}
                   />
                 </div>
 
                 {/* Last Name */}
                 <div>
-                  <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label htmlFor="last_name" className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                     Last Name
                   </label>
                   <input
@@ -97,13 +99,13 @@ const Account: React.FC = () => {
                     name="last_name"
                     value={profile.last_name}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+                    className={`mt-1 block w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-black'}`}
                   />
                 </div>
 
                 {/* Bio */}
                 <div>
-                  <label htmlFor="bio" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label htmlFor="bio" className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                     Bio
                   </label>
                   <textarea
@@ -111,14 +113,14 @@ const Account: React.FC = () => {
                     name="bio"
                     value={profile.bio}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+                    className={`mt-1 block w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-black'}`}
                     rows={4}
                   />
                 </div>
 
                 {/* Verification Status */}
                 <div className="flex items-center">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">Verification Status:</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Verification Status:</p>
                   {profile.verified ? (
                     <BadgeCheck className="ml-2 text-blue-500" size={20} /> // Verified badge
                   ) : (
@@ -148,21 +150,21 @@ const Account: React.FC = () => {
               <div className="space-y-6">
                 {/* First Name */}
                 <div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">First Name:</p>
-                  <p className="text-lg font-semibold text-gray-900 dark:text-white">{profile.first_name}</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>First Name:</p>
+                  <p className={`text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{profile.first_name}</p>
                 </div>
 
                 {/* Last Name */}
                 <div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">Last Name:</p>
-                  <p className="text-lg font-semibold text-gray-900 dark:text-white">{profile.last_name}</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Last Name:</p>
+                  <p className={`text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{profile.last_name}</p>
                 </div>
 
                 {/* Bio */}
                 <div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">Bio:</p>
-                  <div className="mt-1 p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700">
-                    <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Bio:</p>
+                  <div className={`mt-1 p-3 border rounded-md ${theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-300'}`}>
+                    <p className={`text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                       {profile.bio || "No bio provided."}
                     </p>
                   </div>
@@ -170,7 +172,7 @@ const Account: React.FC = () => {
 
                 {/* Verification Status */}
                 <div className="flex items-center">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">Verification Status:</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Verification Status:</p>
                   {profile.verified ? (
                     <BadgeCheck className="ml-2 text-blue-500" size={20} /> // Verified badge
                   ) : (
@@ -194,37 +196,37 @@ const Account: React.FC = () => {
 
           {/* Right Column: Task Statistics */}
           <div>
-            <h3 className="text-xl font-bold mb-6 text-gray-900 dark:text-white">Task Statistics</h3>
+            <h3 className={`text-xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Task Statistics</h3>
 
             {/* Completed Tasks */}
-            <div className="mb-6 p-4 bg-green-50 dark:bg-green-900 rounded-lg">
+            <div className={`mb-6 p-4 rounded-lg ${theme === 'dark' ? 'bg-green-900' : 'bg-green-50'}`}>
               <div className="flex items-center gap-3">
                 <CheckCircle className="text-green-500" size={24} />
                 <div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">Completed Tasks</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{taskStats.completed}</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Completed Tasks</p>
+                  <p className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{taskStats.completed}</p>
                 </div>
               </div>
             </div>
 
             {/* In Progress Tasks */}
-            <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
+            <div className={`mb-6 p-4 rounded-lg ${theme === 'dark' ? 'bg-blue-900' : 'bg-blue-50'}`}>
               <div className="flex items-center gap-3">
                 <Activity className="text-blue-500" size={24} />
                 <div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">In Progress Tasks</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{taskStats.inProgress}</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>In Progress Tasks</p>
+                  <p className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{taskStats.inProgress}</p>
                 </div>
               </div>
             </div>
 
             {/* Overdue Tasks */}
-            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900 rounded-lg">
+            <div className={`mb-6 p-4 rounded-lg ${theme === 'dark' ? 'bg-red-900' : 'bg-red-50'}`}>
               <div className="flex items-center gap-3">
                 <Clock className="text-red-500" size={24} />
                 <div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">Overdue Tasks</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{taskStats.overdue}</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Overdue Tasks</p>
+                  <p className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{taskStats.overdue}</p>
                 </div>
               </div>
             </div>
