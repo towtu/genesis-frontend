@@ -1,4 +1,5 @@
 import React from "react";
+import { useTheme } from "./ThemeContext"; // Import useTheme
 
 const Help: React.FC = () => {
   const faqs = [
@@ -15,24 +16,28 @@ const Help: React.FC = () => {
       answer: "Go to the Account page and click the 'Edit Profile' button.",
     },
   ];
+  const { theme } = useTheme(); // Get the current theme
 
   return (
-    <div className="flex">
-        <div className="flex min-h-screen">
-        <div className="flex-1 p-8 bg-gray-100">
-            <div className="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Help</h2>
-            <div className="space-y-4">
-                {faqs.map((faq, index) => (
-                <div key={index} className="border border-gray-200 rounded-md p-4">
-                    <h3 className="font-semibold">{faq.question}</h3>
-                    <p className="text-sm text-gray-600">{faq.answer}</p>
-                </div>
-                ))}
+    <div className={`flex min-h-full justify-center items-center`}>
+      <div className={`p-8 rounded-lg shadow-lg w-full max-w-2xl ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+        <h2 className={`text-2xl font-bold mb-6 text-center ${theme === 'dark' ? 'text-white' : 'text-black'}`}>Help Center</h2>
+
+        {/* FAQ Section */}
+        <div className="space-y-4">
+          {faqs.map((faq, index) => (
+            <div
+              key={index}
+              className={`border border-gray-200 rounded-md p-4 hover:shadow-md transition-shadow ${
+                theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-white'
+              }`}
+            >
+              <h3 className={`font-semibold text-lg ${theme === 'dark' ? 'text-white' : 'text-black'}`}>{faq.question}</h3>
+              <p className={`text-sm mt-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>{faq.answer}</p>
             </div>
-            </div>
+          ))}
         </div>
-        </div>
+      </div>
     </div>
   );
 };
