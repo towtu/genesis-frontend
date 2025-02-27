@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../services/api';
+import { useTheme } from './ThemeContext'; // Import useTheme
 
 interface Todo {
   id: number;
@@ -12,6 +13,7 @@ interface Todo {
 
 const Important: React.FC = () => {
   const [importantTodos, setImportantTodos] = useState<Todo[]>([]);
+  const { theme } = useTheme(); // Get the current theme
 
   useEffect(() => {
     fetchImportantTodos();
@@ -39,16 +41,16 @@ const Important: React.FC = () => {
   };
 
   return (
-    <div className="flex">
-      <div className="bg-white p-6 rounded shadow-md flex-1">
-        <h2 className="text-3xl text-black mb-4 font-bold">Important</h2>
+    <div className={`flex min-h-full ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>
+      <div className={`p-6 rounded shadow-md flex-1 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+        <h2 className={`text-3xl mb-4 font-bold ${theme === 'dark' ? 'text-white' : 'text-black'}`}>Important</h2>
 
         {/* Table Structure */}
         <table className="w-full border-collapse">
           <thead>
-            <tr className="bg-gray-100">
+            <tr className={`${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'}`}>
               <th className="p-2 text-left">Task Name</th>
-              <th className="p-2 text-left">Due Date</th> {/* Replaced Status with Due Date */}
+              <th className="p-2 text-left">Due Date</th>
             </tr>
           </thead>
           <tbody>
@@ -56,19 +58,23 @@ const Important: React.FC = () => {
               importantTodos.map((todo) => (
                 <tr
                   key={todo.id}
-                  className="border-b border-gray-200 bg-blue-200 hover:bg-blue-400 transition-colors"
+                  className={`border-b ${
+                    theme === 'dark' ? 'border-gray-700 bg-gray-600 hover:bg-gray-500' : 'border-gray-200 bg-blue-200 hover:bg-blue-400'
+                  } transition-colors`}
                 >
                   <td className="p-2 flex items-center">
-                    <span>{todo.title}</span>
+                    <span className={theme === 'dark' ? 'text-white' : 'text-black'}>{todo.title}</span>
                   </td>
                   <td className="p-2">
-                    <span>{todo.due_date ? formatDate(todo.due_date) : 'No due date'}</span>
+                    <span className={theme === 'dark' ? 'text-gray-300' : 'text-black'}>
+                      {todo.due_date ? formatDate(todo.due_date) : 'No due date'}
+                    </span>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={2} className="p-2 text-center">
+                <td colSpan={2} className={`p-2 text-center ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>
                   You have nothing important to do.
                 </td>
               </tr>
