@@ -13,11 +13,13 @@ import {
   LogOut,
 } from "lucide-react";
 import { logout } from "../services/api";
+import { useTheme } from "./ThemeContext"; // Import useTheme
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const { theme } = useTheme(); // Get the current theme
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,7 +54,7 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="bg-blue-200 w-64 h-screen fixed left-0 top-0 flex flex-col p-4">
+    <div className={`bg-blue-200 w-64 h-screen fixed left-0 top-0 flex flex-col p-4 dark:bg-gray-800`}>
       {/* Menu Items */}
       <nav className="flex-1 overflow-y-auto">
         <ul className="space-y-1">
@@ -62,8 +64,8 @@ const Sidebar: React.FC = () => {
                 to={item.path}
                 className={`flex items-center gap-2 p-2 rounded-lg transition-colors ${
                   location.pathname === item.path
-                    ? "bg-blue-300 text-black"
-                    : "hover:bg-blue-300"
+                    ? "bg-blue-300 text-black dark:bg-gray-700 dark:text-white"
+                    : "hover:bg-blue-300 dark:hover:bg-gray-700"
                 }`}
               >
                 {item.icon}
@@ -75,7 +77,7 @@ const Sidebar: React.FC = () => {
 
         {/* Task Items */}
         <div className="mt-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-2">Tasks</h3>
+          <h3 className="text-sm font-semibold text-gray-700 mb-2 dark:text-gray-300">Tasks</h3>
           <ul className="space-y-1">
             {taskItems.map((item) => (
               <li key={item.name}>
@@ -83,8 +85,8 @@ const Sidebar: React.FC = () => {
                   to={item.path}
                   className={`flex items-center gap-2 p-2 rounded-lg transition-colors ${
                     location.pathname === item.path
-                      ? "bg-blue-300 text-black"
-                      : "hover:bg-blue-300"
+                      ? "bg-blue-300 text-black dark:bg-gray-700 dark:text-white"
+                      : "hover:bg-blue-300 dark:hover:bg-gray-700"
                   }`}
                 >
                   {item.icon}
@@ -97,7 +99,7 @@ const Sidebar: React.FC = () => {
 
         {/* Settings Items */}
         <div className="mt-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-2">Settings</h3>
+          <h3 className="text-sm font-semibold text-gray-700 mb-2 dark:text-gray-300">Settings</h3>
           <ul className="space-y-1">
             {settingsItems.map((item) => (
               <li key={item.name}>
@@ -105,8 +107,8 @@ const Sidebar: React.FC = () => {
                   to={item.path}
                   className={`flex items-center gap-2 p-2 rounded-lg transition-colors ${
                     location.pathname === item.path
-                      ? "bg-blue-300 text-black"
-                      : "hover:bg-blue-300"
+                      ? "bg-blue-300 text-black dark:bg-gray-700 dark:text-white"
+                      : "hover:bg-blue-300 dark:hover:bg-gray-700"
                   }`}
                 >
                   {item.icon}
@@ -121,7 +123,7 @@ const Sidebar: React.FC = () => {
       {/* Logout Button */}
       <button
         onClick={handleLogout}
-        className="mt-4 flex items-center gap-2 p-2 rounded-lg hover:bg-blue-300 transition-colors"
+        className="mt-4 flex items-center gap-2 p-2 rounded-lg hover:bg-blue-300 dark:hover:bg-gray-700 transition-colors"
       >
         <LogOut size={20} />
         Logout
