@@ -12,6 +12,7 @@ import Settings from './components/Settings';
 import Important from './components/Important';
 import CalendarView from './components/CalendarPage';
 import MainLayout from './components/MainLayout';
+import { ThemeProvider } from './components/ThemeContext';
 
 const App: React.FC = () => {
   return (
@@ -33,12 +34,22 @@ const AppLayout: React.FC = () => {
   return (
     <>
       <Routes>
-        {/* Routes without MainLayout (and without Navbar) */}
+        {/* Routes without MainLayout and ThemeProvider */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Routes with MainLayout (and Navbar in the main body) */}
-        <Route element={useMainLayout ? <MainLayout /> : <></>}>
+        {/* Routes with MainLayout and ThemeProvider */}
+        <Route
+          element={
+            useMainLayout ? (
+              <ThemeProvider>
+                <MainLayout />
+              </ThemeProvider>
+            ) : (
+              <></>
+            )
+          }
+        >
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/todos" element={<TodoList />} />
           <Route path="/account" element={<Account />} />
