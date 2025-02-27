@@ -4,31 +4,44 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { api } from '../services/api';
 import ReactTooltip from 'react-tooltip';
+import { useTheme } from './ThemeContext';
 
-// Set up the localizer for the calendar
 const localizer = momentLocalizer(moment);
 
-const CalendarView: React.FC = () => {
-  const [events, setEvents] = useState<any[]>([]);
+interface Todo {
+  id: number;
+  title: string;
+  due_date: string;
+  status: string;
+}
 
-  // Fetch todos when the component mounts
+interface CalendarEvent {
+  title: string;
+  start: Date;
+  end: Date;
+  allDay: boolean;
+  resource: Todo;
+}
+
+const CalendarView: React.FC = () => {
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const { theme } = useTheme();
+
   useEffect(() => {
     fetchTodos();
   }, []);
 
-  // Fetch todos from the backend
   const fetchTodos = async () => {
     try {
       const response = await api.get('/todo/');
-      const todos = response.data;
+      const todos: Todo[] = response.data;
 
-      // Convert todos to calendar events
-      const calendarEvents = todos.map((todo: any) => ({
+      const calendarEvents = todos.map((todo) => ({
         title: todo.title,
-        start: new Date(todo.due_date), // Use due_date as the event start time
-        end: new Date(todo.due_date), // Use due_date as the event end time
-        allDay: true, // Mark as an all-day event
-        resource: todo, // Include the todo data for additional details
+        start: new Date(todo.due_date),
+        end: new Date(todo.due_date),
+        allDay: true,
+        resource: todo,
       }));
 
       setEvents(calendarEvents);
@@ -38,34 +51,27 @@ const CalendarView: React.FC = () => {
   };
 
   return (
-    <div className="flex">
-      <div className="flex-1 p-8 bg-gray-100">
-        <div className="bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-6">Calendar</h2>
+    <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>
+      <div className={`flex-1 p-8 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>
+        <div className={`p-8 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+          <h2 className={`text-2xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>Calendar</h2>
           <Calendar
             localizer={localizer}
             events={events}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: 600 }} // Set the calendar height
-            defaultView="month" // Default view (month, week, day)
-            views={['month', 'week', 'day']} // Available views
+            style={{ height: 600 }}
+            defaultView="month"
+            views={['month', 'week', 'day']}
             eventPropGetter={() => ({
               style: {
-                backgroundColor: '#fbbf24', // Customize event color
+                backgroundColor: theme === 'dark' ? '#4B5563' : '#fbbf24',
                 border: 'none',
                 borderRadius: '4px',
-                color: '#000',
+                color: theme === 'dark' ? '#FFF' : '#000',
               },
             })}
-            components={{
-              event: ({ event }) => (
-                <div data-tip={`${event.title} - ${event.resource.status}`}>
-                  {event.title}
-                  <ReactTooltip />
-                </div>
-              ),
-            }}
+            className={theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'}
           />
         </div>
       </div>
