@@ -26,8 +26,13 @@ const Dashboard: React.FC = () => {
 
       const now = new Date();
       const upcoming = response.data
-        .filter((todo: Todo) => todo.due_date && new Date(todo.due_date) > now)
-        .sort((a: Todo, b: Todo) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime())
+        .filter((todo: Todo) => todo.due_date !== null && new Date(todo.due_date) > now) // Filter out null due_date
+        .sort((a: Todo, b: Todo) => {
+          // Ensure due_date is not null before creating Date objects
+          const dateA = a.due_date ? new Date(a.due_date).getTime() : 0;
+          const dateB = b.due_date ? new Date(b.due_date).getTime() : 0;
+          return dateA - dateB;
+        })
         .slice(0, 5); // Limit to 5 upcoming todos
 
       setUpcomingTodos(upcoming);
@@ -38,7 +43,7 @@ const Dashboard: React.FC = () => {
   };
 
   const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'No due date';
+    if (!dateString) return 'No due date'; // Handle null case
     const date = new Date(dateString);
     return isNaN(date.getTime()) ? 'Invalid date' : date.toLocaleDateString('en-US', {
       year: 'numeric',
