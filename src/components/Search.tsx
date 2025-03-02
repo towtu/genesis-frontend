@@ -6,6 +6,8 @@ interface Todo {
   id: number;
   title: string;
   completed: boolean;
+  due_date: string | null; // Add due_date
+  status: string; // Add status
 }
 
 const Search: React.FC = () => {
@@ -20,6 +22,19 @@ const Search: React.FC = () => {
     } catch (error) {
       console.error("Failed to fetch search results:", error);
     }
+  };
+
+  // Format the due date
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return "No due date";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   return (
@@ -56,11 +71,23 @@ const Search: React.FC = () => {
                   theme === 'dark' ? 'bg-gray-700 border-gray-600 hover:bg-gray-600' : 'bg-white'
                 }`}
               >
-                <span className={`${todo.completed ? 'line-through text-gray-500' : ''} ${
-                  theme === 'dark' ? 'text-white' : 'text-black'
-                }`}>
-                  {todo.title}
-                </span>
+                <div className="flex justify-between items-center">
+                  <span className={`${todo.completed ? 'line-through text-gray-500' : ''} ${
+                    theme === 'dark' ? 'text-white' : 'text-black'
+                  }`}>
+                    {todo.title}
+                  </span>
+                  <div className="flex gap-4">
+                    {/* Due Date */}
+                    <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>
+                      Due: {formatDate(todo.due_date)}
+                    </span>
+                    {/* Status */}
+                    <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>
+                      Status: {todo.status}
+                    </span>
+                  </div>
+                </div>
               </li>
             ))}
           </ul>
