@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Home,
@@ -13,18 +12,11 @@ import {
   LogOut,
 } from "lucide-react";
 import { logout } from "../services/api";
-import { useTheme } from "./ThemeContext"; // Import useTheme
+
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const { theme } = useTheme(); // Get the current theme
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    navigate(`/todos?search=${searchQuery}`);
-  };
 
   const menuItems = [
     { name: "Account", path: "/account", icon: <User size={20} /> },

@@ -16,9 +16,9 @@ const Register: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null); // Clear previous errors
+    setError(null); 
 
-    // Check if passwords match
+  
     if (password !== password2) {
       setError('Passwords do not match.');
       return;
@@ -33,7 +33,7 @@ const Register: React.FC = () => {
         last_name: lastName,
       });
 
-      console.log('Registration successful:', response.data); // Log the response
+      console.log('Registration successful:', response.data); 
       navigate('/login');
     } catch (error: any) {
       console.error('Registration failed:', error);

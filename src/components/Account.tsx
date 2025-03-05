@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { api } from "../services/api"; // Import your configured axios instance
 import { BadgeCheck, BadgeMinus, Edit, Save, X, CheckCircle, Clock, Activity } from "lucide-react"; // Import icons
 import { useTheme } from "./ThemeContext"; // Import useTheme
+import Swal from 'sweetalert2'; // Import SweetAlert
 
 const Account: React.FC = () => {
-  const navigate = useNavigate();
   const { theme } = useTheme(); // Get the current theme
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
@@ -56,9 +55,22 @@ const Account: React.FC = () => {
     try {
       await api.put("/profile/", profile); // Use the api instance
       setIsEditing(false);
-      alert("Profile updated successfully!");
+      // Trigger SweetAlert upon successful update
+      Swal.fire({
+        title: 'Success!',
+        text: 'Your profile has been updated successfully.',
+        icon: 'success',
+        confirmButtonText: 'Cool'
+      });
     } catch (error) {
       console.error("Failed to update profile:", error);
+      // Optionally, trigger an error SweetAlert
+      Swal.fire({
+        title: 'Error!',
+        text: 'Failed to update profile.',
+        icon: 'error',
+        confirmButtonText: 'Okay'
+      });
     }
   };
 

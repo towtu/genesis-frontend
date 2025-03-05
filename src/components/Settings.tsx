@@ -9,6 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"; // Adjust the import path
+import { useMutation } from "@tanstack/react-query"; // Import useMutation
+import Swal from "sweetalert2"; // For confirmation alert
 
 const Settings: React.FC = () => {
   const { theme, setTheme } = useTheme(); // Get theme from ThemeContext
@@ -18,6 +20,30 @@ const Settings: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState(""); // Confirm new password input
   const [error, setError] = useState(""); // Error message
 
+  // TanStack Query Mutation for changing password
+  const changePasswordMutation = useMutation({
+    mutationFn: async (passwords: { currentPassword: string; newPassword: string }) => {
+      const response = await api.put("/change-password/", {
+        current_password: passwords.currentPassword,
+        new_password: passwords.newPassword,
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      Swal.fire({
+        title: "Success!",
+        text: "Password changed successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+      setError("");
+      setIsChangingPassword(false); // Hide the password change form
+    },
+    onError: (error: any) => {
+      console.error("Failed to change password:", error);
+      setError("Failed to change password. Please check your current password.");
+    },
+  });
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
@@ -25,22 +51,25 @@ const Settings: React.FC = () => {
       return;
     }
 
-    try {
-      const response = await api.put("/change-password/", {
-        current_password: currentPassword,
-        new_password: newPassword,
-      });
-      alert("Password changed successfully!");
-      setError("");
-      setIsChangingPassword(false); // Hide the password change form
-    } catch (error) {
-      console.error("Failed to change password:", error);
-      setError("Failed to change password. Please check your current password.");
-    }
+    // Confirmation alert before changing password
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You are about to change your password.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, change it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Trigger the mutation
+        changePasswordMutation.mutate({ currentPassword, newPassword });
+      }
+    });
   };
 
   return (
-    <div className={`flex min-h-full justify-center items-center p-8`}>
+    <div className={`flex min-h-full justify-center items-center p-8 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>
       <div className={`w-full max-w-4xl p-8 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
         <h2 className="text-2xl font-bold mb-6 text-center">Settings</h2>
 
@@ -135,9 +164,10 @@ const Settings: React.FC = () => {
                 {/* Save Password Button */}
                 <button
                   onClick={handleChangePassword}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full"
+                  disabled={changePasswordMutation.isPending} // Disable button while loading
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full disabled:bg-blue-300"
                 >
-                  Save Password
+                  {changePasswordMutation.isPending ? "Saving..." : "Save Password"}
                 </button>
 
                 {/* Cancel Button */}

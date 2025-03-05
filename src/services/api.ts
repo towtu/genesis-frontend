@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // axios nako //
-const API_URL = 'http://localhost:8000/api';
+const API_URL = import.meta.env.VITE_BACK_END_BASE_URL
 
 const api = axios.create({
   baseURL: API_URL,
@@ -80,16 +80,16 @@ export const createTodo = async (data: {
 export const updateTodo = async (todoId: number, data: {
   title?: string;
   completed?: boolean;
-  due_date?: string | null;  // Make due_date optional
+  due_date?: string | null;
   status?: string;
-  date?: string | null;  // Make date optional
+  date?: string | null;
 }) => {
   return api.patch(`/todo-detail/${todoId}/`, {
     title: data.title,
     completed: data.completed,
-    due_date: data.due_date || null,  // Pass null if due_date is not provided
+    due_date: data.due_date || null,
     status: data.status,
-    date: data.date || null,  // Pass null if date is not provided
+    date: data.date || null, 
   });
 };
 

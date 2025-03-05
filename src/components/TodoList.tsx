@@ -161,8 +161,8 @@ const TodoList: React.FC = () => {
 
   const formatStatus = (status: string) => {
     return status
-      .replace(/_/g, ' ') // Replace underscores with spaces
-      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize the first letter of each word
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
   return (

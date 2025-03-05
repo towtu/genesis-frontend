@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import { getDashboard } from '../services/api';
-import { useTheme } from './ThemeContext'; // Import useTheme
+
 
 const Navbar = () => {
   const [message, setMessage] = useState('Welcome to Genesis');
   const [token, setToken] = useState(localStorage.getItem('access_token'));
-  const { theme } = useTheme(); // Get the current theme
 
   // Fetch the dashboard message when the token changes
   useEffect(() => {
