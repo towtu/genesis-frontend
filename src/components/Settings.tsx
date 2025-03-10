@@ -111,12 +111,7 @@ const Settings: React.FC = () => {
 
             {/* Toggle Password Change Form */}
             {!isChangingPassword ? (
-              <button
-                onClick={() => setIsChangingPassword(true)}
-                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full"
-              >
-                Change Password
-              </button>
+              
             ) : (
               <div className="space-y-4">
                 {/* Current Password */}
