@@ -105,9 +105,84 @@ const Settings: React.FC = () => {
             </div>
           </div>
 
+          {/* Change Password Section */}
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Change Password</h3>
+
+            {/* Toggle Password Change Form */}
+            {!isChangingPassword ? (
+                <button
+                onClick={() => setIsChangingPassword(true)}
+                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full"
+              >
+                Change Password
+              </button>
+            ) : (
+              <div className="space-y-4">
+                {/* Current Password */}
+                <div>
+                  <label className="block text-sm font-medium">Current Password</label>
+                  <input
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className={`mt-1 block w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-black'
+                    }`}
+                  />
+                </div>
+
+                {/* New Password */}
+                <div>
+                  <label className="block text-sm font-medium">New Password</label>
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className={`mt-1 block w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-black'
+                    }`}
+                  />
+                </div>
+
+                {/* Confirm New Password */}
+                <div>
+                  <label className="block text-sm font-medium">Confirm New Password</label>
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className={`mt-1 block w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-black'
+                    }`}
+                  />
+                </div>
+
+                {/* Error Message */}
+                {error && <p className="text-red-500 text-sm">{error}</p>}
+
+                {/* Save Password Button */}
+                <button
+                  onClick={handleChangePassword}
+                  disabled={changePasswordMutation.isPending} // Disable button while loading
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full disabled:bg-blue-300"
+                >
+                  {changePasswordMutation.isPending ? "Saving..." : "Save Password"}
+                </button>
+
+                {/* Cancel Button */}
+                <button
+                  onClick={() => setIsChangingPassword(false)}
+                  className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 w-full mt-2"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
+    </div>
   );
 };
 
