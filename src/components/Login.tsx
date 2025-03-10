@@ -40,7 +40,7 @@ const Login: React.FC = () => {
           {/* Abstract Art Placeholder */}
           <div className="mt-9 mx-28">
             <img
-              src="./public/lala.png"
+              src="/lala.png"
               alt="Abstract geometric shapes"
               className="w-100 h-100"
             />
