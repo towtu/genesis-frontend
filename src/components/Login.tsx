@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { login } from "../services/api";
 import { useNavigate } from "react-router-dom";
 
@@ -8,24 +9,29 @@ const Login: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
-    try {
-      const response = await login({ email, password });
+  const loginMutation = useMutation({
+    mutationFn: (credentials: { email: string; password: string }) =>
+      login(credentials),
+    onSuccess: (response) => {
       localStorage.setItem("access_token", response.data.access);
       localStorage.setItem("refresh_token", response.data.refresh);
       navigate("/dashboard");
       window.location.reload();
-    } catch (error: any) {
+    },
+    onError: (error: any) => {
       console.error("Login failed", error);
       if (error.response) {
         setError(error.response.data.message || "Invalid credentials. Please try again.");
       } else {
         setError("An unexpected error occurred. Please try again.");
       }
-    }
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    loginMutation.mutate({ email, password });
   };
 
   return (
@@ -74,9 +80,10 @@ const Login: React.FC = () => {
               </div>
               <button
                 type="submit"
-                className="w-full bg-blue-500 text-white p-3 rounded text-lg font-bold"
+                disabled={loginMutation.isPending}
+                className="w-full bg-blue-500 text-white p-3 rounded text-lg font-bold disabled:bg-blue-300"
               >
-                Log in
+                {loginMutation.isPending ? "Logging in..." : "Log in"}
               </button>
             </form>
           </div>

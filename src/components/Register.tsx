@@ -1,51 +1,58 @@
-// src/components/Register.tsx
-import React, { useState } from 'react';
-import { register } from '../services/api';
-import { useNavigate } from 'react-router-dom';
-
+import React, { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { register } from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 const Register: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [password2, setPassword2] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  const registerMutation = useMutation({
+    mutationFn: (userData: {
+      email: string;
+      username: string;
+      password: string;
+      first_name: string;
+      last_name: string;
+    }) => register(userData),
+    onSuccess: (response) => {
+      console.log("Registration successful:", response.data);
+      navigate("/login");
+    },
+    onError: (error: any) => {
+      console.error("Registration failed:", error);
+      if (error.response) {
+        setError(error.response.data.message || "Registration failed. Please try again.");
+      } else if (error.request) {
+        setError("No response from the server. Please check your connection.");
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
+    },
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null); 
+    setError(null);
 
-  
     if (password !== password2) {
-      setError('Passwords do not match.');
+      setError("Passwords do not match.");
       return;
     }
 
-    try {
-      const response = await register({
-        email,
-        username,
-        password,
-        first_name: firstName,
-        last_name: lastName,
-      });
-
-      console.log('Registration successful:', response.data); 
-      navigate('/login');
-    } catch (error: any) {
-      console.error('Registration failed:', error);
-
-      if (error.response) {
-        setError(error.response.data.message || 'Registration failed. Please try again.');
-      } else if (error.request) {
-        setError('No response from the server. Please check your connection.');
-      } else {
-        setError('An unexpected error occurred. Please try again.');
-      }
-    }
+    registerMutation.mutate({
+      email,
+      username,
+      password,
+      first_name: firstName,
+      last_name: lastName,
+    });
   };
 
   return (
@@ -127,25 +134,29 @@ const Register: React.FC = () => {
             <p className="text-xs text-gray-500 mb-4">
               Use 8 or more characters with a mix of letters, numbers & symbols
             </p>
-            <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded w-full">
-              Continue
+            <button
+              type="submit"
+              disabled={registerMutation.isPending}
+              className="bg-blue-600 text-white py-2 px-4 rounded w-full disabled:bg-blue-300"
+            >
+              {registerMutation.isPending ? "Registering..." : "Continue"}
             </button>
             <div className="flex items-center mt-4">
               <input type="checkbox" className="mr-2" />
               <p className="text-xs text-gray-500">
-                By creating an account, I agree to our{' '}
+                By creating an account, I agree to our{" "}
                 <a href="#" className="text-blue-600">
                   Terms of use
-                </a>{' '}
-                and{' '}
+                </a>{" "}
+                and{" "}
                 <a href="#" className="text-blue-600">
                   Privacy Policy
                 </a>
               </p>
             </div>
             <div>
-            <a href="/login" className="text-blue-600 underline block text-center">
-                  Already have an account?
+              <a href="/login" className="text-blue-600 underline block text-center">
+                Already have an account?
               </a>
             </div>
           </form>
