@@ -24,12 +24,7 @@ const Completed: React.FC = () => {
       const response = await api.get('/todo/', {
         params: { completed: true }, // Fetch only completed todos
       });
-      // Add completedDate to each todo if it doesn't exist
-      const todosWithCompletedDate = response.data.map((todo: Todo) => ({
-        ...todo,
-        completedDate: todo.completedDate || new Date().toISOString(), // Simulate completed date
-      }));
-      setCompletedTodos(todosWithCompletedDate);
+      setCompletedTodos(response.data); // No need to modify the data here
     } catch (error) {
       console.error('Failed to fetch completed todos:', error);
     }
