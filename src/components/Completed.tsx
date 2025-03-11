@@ -24,10 +24,10 @@ const Completed: React.FC = () => {
       const response = await api.get('/todo/', {
         params: { completed: true }, // Fetch only completed todos
       });
-      // Add unique completedDate to each todo
-      const todosWithCompletedDate = response.data.map((todo: Todo, index: number) => ({
+      // Add completedDate to each todo if it doesn't exist
+      const todosWithCompletedDate = response.data.map((todo: Todo) => ({
         ...todo,
-        completedDate: new Date(new Date().setDate(new Date().getDate() - index)).toISOString(), // Simulate unique completed date
+        completedDate: todo.completedDate || new Date().toISOString(), // Simulate completed date
       }));
       setCompletedTodos(todosWithCompletedDate);
     } catch (error) {
