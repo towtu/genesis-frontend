@@ -8,6 +8,7 @@ interface Todo {
   completed: boolean;
   status: string;
   mark_as_important?: boolean; // Optional property
+  completedDate?: string; // Add completedDate field
 }
 
 const Completed: React.FC = () => {
@@ -23,10 +24,26 @@ const Completed: React.FC = () => {
       const response = await api.get('/todo/', {
         params: { completed: true }, // Fetch only completed todos
       });
-      setCompletedTodos(response.data);
+      // Add completedDate to each todo if it doesn't exist
+      const todosWithCompletedDate = response.data.map((todo: Todo) => ({
+        ...todo,
+        completedDate: todo.completedDate || new Date().toISOString(), // Simulate completed date
+      }));
+      setCompletedTodos(todosWithCompletedDate);
     } catch (error) {
       console.error('Failed to fetch completed todos:', error);
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   };
 
   return (
@@ -39,6 +56,7 @@ const Completed: React.FC = () => {
           <thead>
             <tr className={`${theme === 'dark' ? 'bg-gray-700 text-white' : 'bg-gray-100 text-black'}`}>
               <th className="p-2 text-left">Task Name</th>
+              <th className="p-2 text-left">Completed Date</th> {/* New Column */}
               <th className="p-2 text-left">Status</th>
             </tr>
           </thead>
@@ -57,13 +75,18 @@ const Completed: React.FC = () => {
                     </span>
                   </td>
                   <td className="p-2">
+                    <span className={theme === 'dark' ? 'text-gray-300' : 'text-black'}>
+                      {todo.completedDate ? formatDate(todo.completedDate) : 'N/A'}
+                    </span>
+                  </td>
+                  <td className="p-2">
                     <span className={theme === 'dark' ? 'text-gray-300' : 'text-black'}>{todo.status}</span>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={2} className={`p-2 text-center ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>
+                <td colSpan={3} className={`p-2 text-center ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>
                   No completed todos found.
                 </td>
               </tr>
