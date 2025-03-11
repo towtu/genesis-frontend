@@ -107,6 +107,7 @@ const TodoList: React.FC = () => {
   };
 
   const handleDeleteClick = async (todoId: number) => {
+    // SweetAlert Confirmation
     const result = await Swal.fire({
       title: 'Are you sure?',
       text: 'You will not be able to recover this task!',
@@ -132,8 +133,15 @@ const TodoList: React.FC = () => {
 
   const handleToggleCompleted = async (todoId: number, completed: boolean) => {
     try {
-      await updateTodo(todoId, { completed: !completed, status: !completed ? 'completed' : 'not_started' });
-      fetchTodos();
+      const todoToUpdate = todos.find(todo => todo.id === todoId);
+      if (todoToUpdate) {
+        await updateTodo(todoId, { 
+          completed: !completed, 
+          status: !completed ? 'completed' : 'not_started',
+          due_date: todoToUpdate.due_date // Preserve the due date
+        });
+        fetchTodos();
+      }
     } catch (error) {
       console.error('Failed to toggle todo completion', error);
     }
@@ -157,12 +165,6 @@ const TodoList: React.FC = () => {
       hour: '2-digit',
       minute: '2-digit',
     });
-  };
-
-  const formatStatus = (status: string) => {
-    return status
-      .replace(/_/g, ' ')
-      .replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
   return (
@@ -258,6 +260,7 @@ const TodoList: React.FC = () => {
                     </>
                   ) : (
                     <>
+                      {/* Checkbox for Completion */}
                       <input
                         type="checkbox"
                         checked={todo.completed}
@@ -301,7 +304,7 @@ const TodoList: React.FC = () => {
                       <option value="completed">Completed</option>
                     </select>
                   ) : (
-                    <span>{formatStatus(todo.status)}</span>
+                    <span>{todo.status}</span>
                   )}
                 </td>
                 <td className="p-2 flex gap-2">
@@ -322,18 +325,21 @@ const TodoList: React.FC = () => {
                     </>
                   ) : (
                     <>
+                      {/* Edit Button */}
                       <button
                         onClick={() => handleEditClick(todo)}
                         className={`${theme === 'dark' ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'}`}
                       >
                         <Edit size={20} />
                       </button>
+                      {/* Star Button */}
                       <button
                         onClick={() => handleMarkAsImportant(todo.id)}
                         className={`${todo.mark_as_important ? 'text-yellow-500' : theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} hover:text-yellow-600`}
                       >
                         <Star size={20} />
                       </button>
+                      {/* Delete Button */}
                       <button
                         onClick={() => handleDeleteClick(todo.id)}
                         className={`${theme === 'dark' ? 'text-red-400 hover:text-red-300' : 'text-red-600 hover:text-red-800'}`}
