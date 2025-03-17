@@ -1,171 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { getTodos, createTodo, updateTodo, deleteTodo, markTodoAsImportant } from '../services/api';
+import React from 'react';
 import { Plus, Star, Edit, Trash } from 'lucide-react';
-import Swal from 'sweetalert2';
 import { useTheme } from './ThemeContext';
-
-interface Todo {
-  id: number;
-  title: string;
-  completed: boolean;
-  due_date: string | null;
-  status: string;
-  mark_as_important?: boolean;
-}
+import useTodos from '../hooks/useTodos';
+import useCreate from '../hooks/useCreate';
+import useDelete from '../hooks/useDelete';
 
 const TodoList: React.FC = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [newTodoTitle, setNewTodoTitle] = useState<string>('');
-  const [newTodoDueDate, setNewTodoDueDate] = useState<string>('');
-  const [newTodoStatus, setNewTodoStatus] = useState<string>('not_started');
-  const [isInputEnabled, setIsInputEnabled] = useState<boolean>(false);
-  const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
-  const [editedTitle, setEditedTitle] = useState<string>('');
-  const [editedDueDate, setEditedDueDate] = useState<string>('');
-  const [editedStatus, setEditedStatus] = useState<string>('not_started');
-  const location = useLocation();
   const { theme } = useTheme();
+  const {
+    todos,
+    editingTodoId,
+    editedTitle,
+    setEditedTitle,
+    editedDueDate,
+    setEditedDueDate,
+    editedStatus,
+    setEditedStatus,
+    fetchTodos,
+    handleEditClick,
+    handleCancelEdit,
+    handleSaveClick,
+    handleToggleCompleted,
+    handleMarkAsImportant,
+    formatDate,
+  } = useTodos();
 
-  const searchQuery = new URLSearchParams(location.search).get('search') || '';
+  const {
+    newTodoTitle,
+    setNewTodoTitle,
+    newTodoDueDate,
+    setNewTodoDueDate,
+    newTodoStatus,
+    setNewTodoStatus,
+    isInputEnabled,
+    handleEnableInput,
+    handleCancelCreate,
+    handleAddTodo,
+  } = useCreate();
 
-  useEffect(() => {
-    fetchTodos();
-  }, [searchQuery]);
-
-  const fetchTodos = async () => {
-    try {
-      const response = await getTodos();
-      const filteredTodos = response.data.filter((todo: Todo) =>
-        todo.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setTodos(filteredTodos);
-    } catch (error) {
-      console.error('Failed to fetch todos', error);
-    }
-  };
-
-  const handleEnableInput = () => {
-    setIsInputEnabled(true);
-  };
-
-  const handleCancelCreate = () => {
-    setNewTodoTitle('');
-    setNewTodoDueDate('');
-    setNewTodoStatus('not_started');
-    setIsInputEnabled(false);
-  };
-
-  const handleAddTodo = async () => {
-    if (!newTodoTitle.trim()) return;
-
-    try {
-      await createTodo({
-        title: newTodoTitle,
-        completed: false,
-        due_date: newTodoDueDate || null,
-        status: newTodoStatus,
-        date: null,
-      });
-      setNewTodoTitle('');
-      setNewTodoDueDate('');
-      setNewTodoStatus('not_started');
-      setIsInputEnabled(false);
-      fetchTodos();
-    } catch (error) {
-      console.error('Failed to add todo', error);
-    }
-  };
-
-  const handleEditClick = (todo: Todo) => {
-    setEditingTodoId(todo.id);
-    setEditedTitle(todo.title);
-    setEditedDueDate(todo.due_date || '');
-    setEditedStatus(todo.status || 'not_started');
-  };
-
-  const handleCancelEdit = () => {
-    setEditingTodoId(null);
-    setEditedTitle('');
-    setEditedDueDate('');
-    setEditedStatus('not_started');
-  };
-
-  const handleSaveClick = async (todoId: number) => {
-    try {
-      await updateTodo(todoId, {
-        title: editedTitle,
-        due_date: editedDueDate || null,
-        status: editedStatus,
-        date: null,
-      });
-      setEditingTodoId(null);
-      fetchTodos();
-    } catch (error) {
-      console.error('Failed to update todo', error);
-    }
-  };
-
-  const handleDeleteClick = async (todoId: number) => {
-    // SweetAlert Confirmation
-    const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: 'You will not be able to recover this task!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, keep it',
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-    });
-
-    if (result.isConfirmed) {
-      try {
-        await deleteTodo(todoId);
-        fetchTodos();
-        Swal.fire('Deleted!', 'Your task has been deleted.', 'success');
-      } catch (error) {
-        console.error('Failed to delete todo', error);
-        Swal.fire('Error', 'Failed to delete the task.', 'error');
-      }
-    }
-  };
-
-  const handleToggleCompleted = async (todoId: number, completed: boolean) => {
-    try {
-      const todoToUpdate = todos.find(todo => todo.id === todoId);
-      if (todoToUpdate) {
-        await updateTodo(todoId, { 
-          completed: !completed, 
-          status: !completed ? 'completed' : 'not_started',
-          due_date: todoToUpdate.due_date // Preserve the due date
-        });
-        fetchTodos();
-      }
-    } catch (error) {
-      console.error('Failed to toggle todo completion', error);
-    }
-  };
-
-  const handleMarkAsImportant = async (todoId: number) => {
-    try {
-      await markTodoAsImportant(todoId);
-      fetchTodos();
-    } catch (error) {
-      console.error('Failed to mark todo as important:', error);
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
+  const { handleDeleteClick } = useDelete();
 
   return (
     <div className={`flex ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
@@ -213,7 +86,7 @@ const TodoList: React.FC = () => {
                 <option value="completed">Completed</option>
               </select>
               <button
-                onClick={handleAddTodo}
+                onClick={() => handleAddTodo(fetchTodos)}
                 className="bg-green-500 text-white px-4 py-2 rounded"
               >
                 Save
@@ -341,7 +214,7 @@ const TodoList: React.FC = () => {
                       </button>
                       {/* Delete Button */}
                       <button
-                        onClick={() => handleDeleteClick(todo.id)}
+                        onClick={() => handleDeleteClick(todo.id, fetchTodos)}
                         className={`${theme === 'dark' ? 'text-red-400 hover:text-red-300' : 'text-red-600 hover:text-red-800'}`}
                       >
                         <Trash size={20} />

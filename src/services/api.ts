@@ -64,16 +64,16 @@ export const markTodoAsCompleted = async (todoId: number) => {
 export const createTodo = async (data: {
   title: string;
   completed: boolean;
-  due_date?: string | null;  // Make due_date optional
+  due_date?: string | null;
   status?: string;
-  date?: string | null;  // Make date optional
+  date?: string | null;
 }) => {
   return api.post('/todo/', {
     title: data.title,
     completed: data.completed,
-    due_date: data.due_date || null,  // Pass null if due_date is not provided
-    status: data.status || 'not_started',  // Default status
-    date: data.date || null,  // Pass null if date is not provided
+    due_date: data.due_date || null,
+    status: data.status || 'not_started',
+    date: data.date || null, 
   });
 };
 
