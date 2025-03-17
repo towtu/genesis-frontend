@@ -5,6 +5,7 @@ import {
   updateTodo as updateTodoApi,
   markTodoAsImportant as markTodoAsImportantApi,
 } from '../services/api';
+import { useGenericMutation } from './useGenericMutation';
 
 interface Todo {
   id: number;
@@ -41,6 +42,19 @@ const useTodos = () => {
     }
   };
 
+  const { mutate: updateTodo } = useGenericMutation({
+    mutationFn: (data: { todoId: number; updatedData: Partial<Todo> }) =>
+      updateTodoApi(data.todoId, data.updatedData),
+    successMessage: 'Todo updated successfully!',
+    errorMessage: 'Failed to update todo.',
+  });
+
+  const { mutate: markAsImportant } = useGenericMutation({
+    mutationFn: (todoId: number) => markTodoAsImportantApi(todoId),
+    successMessage: 'Todo marked as important!',
+    errorMessage: 'Failed to mark todo as important.',
+  });
+
   const handleEditClick = (todo: Todo) => {
     setEditingTodoId(todo.id);
     setEditedTitle(todo.title);
@@ -56,43 +70,51 @@ const useTodos = () => {
   };
 
   const handleSaveClick = async (todoId: number) => {
-    try {
-      await updateTodoApi(todoId, {
-        title: editedTitle,
-        due_date: editedDueDate || null,
-        status: editedStatus,
-        date: null,
-      });
-      setEditingTodoId(null);
-      fetchTodos();
-    } catch (error) {
-      console.error('Failed to update todo', error);
-    }
+    updateTodo(
+      {
+        todoId,
+        updatedData: {
+          title: editedTitle,
+          due_date: editedDueDate || null,
+          status: editedStatus,
+        },
+      },
+      {
+        onSuccess: () => {
+          setEditingTodoId(null);
+          fetchTodos();
+        },
+      }
+    );
   };
 
   const handleToggleCompleted = async (todoId: number, completed: boolean) => {
-    try {
-      const todoToUpdate = todos.find(todo => todo.id === todoId);
-      if (todoToUpdate) {
-        await updateTodoApi(todoId, { 
-          completed: !completed, 
-          status: !completed ? 'completed' : 'not_started',
-          due_date: todoToUpdate.due_date // Preserve the due date
-        });
-        fetchTodos();
-      }
-    } catch (error) {
-      console.error('Failed to toggle todo completion', error);
+    const todoToUpdate = todos.find((todo) => todo.id === todoId);
+    if (todoToUpdate) {
+      updateTodo(
+        {
+          todoId,
+          updatedData: {
+            completed: !completed,
+            status: !completed ? 'completed' : 'not_started',
+            due_date: todoToUpdate.due_date,
+          },
+        },
+        {
+          onSuccess: () => {
+            fetchTodos();
+          },
+        }
+      );
     }
   };
 
   const handleMarkAsImportant = async (todoId: number) => {
-    try {
-      await markTodoAsImportantApi(todoId);
-      fetchTodos();
-    } catch (error) {
-      console.error('Failed to mark todo as important:', error);
-    }
+    markAsImportant(todoId, {
+      onSuccess: () => {
+        fetchTodos();
+      },
+    });
   };
 
   const formatDate = (dateString: string) => {

@@ -1,7 +1,14 @@
 import Swal from 'sweetalert2';
 import { deleteTodo as deleteTodoApi } from '../services/api';
+import { useGenericMutation } from './useGenericMutation';
 
 const useDelete = () => {
+  const { mutate: deleteTodo } = useGenericMutation({
+    mutationFn: (todoId: number) => deleteTodoApi(todoId),
+    successMessage: 'Todo deleted successfully!',
+    errorMessage: 'Failed to delete todo.',
+  });
+
   const handleDeleteClick = async (todoId: number, fetchTodos: () => void) => {
     const result = await Swal.fire({
       title: 'Are you sure?',
@@ -15,14 +22,11 @@ const useDelete = () => {
     });
 
     if (result.isConfirmed) {
-      try {
-        await deleteTodoApi(todoId);
-        fetchTodos(); // Refresh the todo list
-        Swal.fire('Deleted!', 'Your task has been deleted.', 'success');
-      } catch (error) {
-        console.error('Failed to delete todo', error);
-        Swal.fire('Error', 'Failed to delete the task.', 'error');
-      }
+      deleteTodo(todoId, {
+        onSuccess: () => {
+          fetchTodos(); // Refresh the todo list
+        },
+      });
     }
   };
 
