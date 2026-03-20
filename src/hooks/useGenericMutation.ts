@@ -34,8 +34,22 @@ export const useGenericMutation = <TData, TVariables>({
         onSuccess(data, variables);
       }
     },
-    onError: (error, variables) => {
-      toast.error(errorMessage || error.message || 'An unexpected error occurred.'); // Show error toast
+    onError: (error: any, variables) => {
+      let message = errorMessage || 'An unexpected error occurred.';
+      if (error?.response?.data) {
+        const data = error.response.data;
+        if (typeof data === 'string') {
+          message = data;
+        } else if (data.detail) {
+          message = data.detail;
+        } else {
+          const messages = Object.entries(data)
+            .map(([key, val]) => `${key}: ${Array.isArray(val) ? val.join(' ') : val}`)
+            .join('\n');
+          if (messages) message = messages;
+        }
+      }
+      toast.error(message);
       if (onError) {
         onError(error, variables);
       }
