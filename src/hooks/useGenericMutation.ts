@@ -18,10 +18,10 @@ export const useGenericMutation = <TData, TVariables>({
   successMessage,
   errorMessage,
   redirectPath, // Add this line
-}: MutationOptions<TData, TVariables>): UseMutationResult<TData, Error, TVariables> => {
-  const navigate = useNavigate(); // Add this line
+}: MutationOptions<TData, TVariables>): UseMutationResult<TData, any, TVariables> => {
+  const navigate = useNavigate();
 
-  return useMutation<TData, Error, TVariables>({
+  return useMutation<TData, any, TVariables>({
     mutationFn,
     onSuccess: (data, variables) => {
       if (successMessage) {
