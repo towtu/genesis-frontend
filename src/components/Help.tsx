@@ -32,7 +32,7 @@ const Help: React.FC = () => {
   const { theme } = useTheme(); // Get the current theme
 
   return (
-    <div className="flex min-h-screen justify-center items-center p-6">
+    <div className={`flex min-h-full justify-center items-center p-3 sm:p-6 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
       <div
         className={`p-8 rounded-lg shadow-lg w-full max-w-full ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}
       >

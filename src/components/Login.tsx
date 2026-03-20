@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useLogin } from '../hooks/useLogin';
 
 const Login: React.FC = () => {
@@ -17,23 +18,28 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="bg-blue-200 h-screen w-screen flex items-center justify-center">
-      <div className="flex w-full h-full bg-blue-200 p-12">
+    <div className="bg-blue-200 min-h-screen w-screen flex items-center justify-center px-4 py-6">
+      <div className="flex flex-col lg:flex-row w-full max-w-5xl gap-8">
         {/* Left Side */}
-        <div className="w-1/2 flex flex-col justify-center px-12">
+        <div className="hidden lg:flex w-1/2 flex-col justify-center px-8">
           <img src="/sara.png" alt="Genesis Logo" className="w-96 h-24" />
           <p className="text-lg text-black mt-6">
             Your simple, intuitive to-do list platform designed to help you organize tasks and boost productivity effortlessly.
           </p>
-          <div className="mt-9 mx-28">
-            <img src="/lala.png" alt="Abstract geometric shapes" className="w-100 h-100" />
+          <div className="mt-9 flex justify-center">
+            <img src="/lala.png" alt="Abstract geometric shapes" className="max-w-xs" />
           </div>
         </div>
 
+        {/* Mobile Logo */}
+        <div className="lg:hidden flex justify-center">
+          <img src="/sara.png" alt="Genesis Logo" className="w-48 h-auto" />
+        </div>
+
         {/* Right Side - Login Box */}
-        <div className="w-1/2 flex justify-center items-center">
-          <div className="bg-white rounded-xl shadow-lg p-8 max-w-lg w-full">
-            <h2 className="text-3xl font-bold mb-6 text-center">Sign In</h2>
+        <div className="w-full lg:w-1/2 flex justify-center items-center">
+          <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 w-full max-w-lg">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Sign In</h2>
             {error && <div className="text-red-500 mb-4 text-center">{error.message}</div>}
             <form onSubmit={handleSubmit} className="space-y-5">
               <input
@@ -41,7 +47,7 @@ const Login: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Please enter your email address"
-                className="w-full p-3 border border-gray-300 rounded text-lg"
+                className="w-full p-3 border border-gray-300 rounded text-base sm:text-lg"
                 required
               />
               <div className="relative">
@@ -50,15 +56,16 @@ const Login: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter password"
-                  className="w-full p-3 border border-gray-300 rounded text-lg"
+                  className="w-full p-3 border border-gray-300 rounded text-base sm:text-lg pr-10"
                   required
                 />
-                <span
-                  className="absolute right-3 top-3 text-gray-500 cursor-pointer"
+                <button
+                  type="button"
+                  className="absolute right-3 top-3.5 text-gray-500 cursor-pointer"
                   onClick={togglePasswordVisibility}
                 >
-                  {showPassword ? 'Hide' : 'Show'}
-                </span>
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
               <div className="flex justify-between text-md">
                 <a className="text-blue-500" href="/register">Register Now</a>

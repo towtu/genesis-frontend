@@ -1,3 +1,4 @@
+import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Home,
@@ -10,13 +11,21 @@ import {
   Settings,
   HelpCircle,
   LogOut,
+  X,
 } from "lucide-react";
 import { logout } from "../services/api";
+import { useTheme } from "./ThemeContext";
 
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
-const Sidebar: React.FC = () => {
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const dark = theme === "dark";
 
   const menuItems = [
     { name: "Account", path: "/account", icon: <User size={20} /> },
@@ -39,88 +48,122 @@ const Sidebar: React.FC = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate("/login"); // Redirect to login page after logout
+      navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
+  const handleNavClick = () => {
+    onClose();
+  };
+
+  const linkClass = (path: string) =>
+    `flex items-center gap-2 p-2 rounded-lg transition-colors ${
+      location.pathname === path
+        ? dark
+          ? "bg-gray-700 text-white"
+          : "bg-blue-300 text-black"
+        : dark
+        ? "text-gray-200 hover:bg-gray-700 hover:text-white"
+        : "text-gray-800 hover:bg-blue-300"
+    }`;
+
   return (
-    <div className={`bg-blue-200 w-64 h-screen fixed left-0 top-0 flex flex-col p-4 dark:bg-gray-800`}>
-      {/* Menu Items */}
-      <nav className="flex-1 overflow-y-auto">
-        <ul className="space-y-1">
-          {menuItems.map((item) => (
-            <li key={item.name}>
-              <Link
-                to={item.path}
-                className={`flex items-center gap-2 p-2 rounded-lg transition-colors ${
-                  location.pathname === item.path
-                    ? "bg-blue-300 text-black dark:bg-gray-700 dark:text-white"
-                    : "hover:bg-blue-300 dark:hover:bg-gray-700"
-                }`}
-              >
-                {item.icon}
-                {item.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
+    <>
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+          onClick={onClose}
+        />
+      )}
 
-        {/* Task Items */}
-        <div className="mt-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-2 dark:text-gray-300">Tasks</h3>
-          <ul className="space-y-1">
-            {taskItems.map((item) => (
-              <li key={item.name}>
-                <Link
-                  to={item.path}
-                  className={`flex items-center gap-2 p-2 rounded-lg transition-colors ${
-                    location.pathname === item.path
-                      ? "bg-blue-300 text-black dark:bg-gray-700 dark:text-white"
-                      : "hover:bg-blue-300 dark:hover:bg-gray-700"
-                  }`}
-                >
-                  {item.icon}
-                  {item.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Settings Items */}
-        <div className="mt-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-2 dark:text-gray-300">Settings</h3>
-          <ul className="space-y-1">
-            {settingsItems.map((item) => (
-              <li key={item.name}>
-                <Link
-                  to={item.path}
-                  className={`flex items-center gap-2 p-2 rounded-lg transition-colors ${
-                    location.pathname === item.path
-                      ? "bg-blue-300 text-black dark:bg-gray-700 dark:text-white"
-                      : "hover:bg-blue-300 dark:hover:bg-gray-700"
-                  }`}
-                >
-                  {item.icon}
-                  {item.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </nav>
-
-      {/* Logout Button */}
-      <button
-        onClick={handleLogout}
-        className="mt-4 flex items-center gap-2 p-2 rounded-lg hover:bg-blue-300 dark:hover:bg-gray-700 transition-colors"
+      {/* Sidebar */}
+      <div
+        className={`
+          w-64 h-screen fixed left-0 top-0 flex flex-col p-4 z-30
+          transform transition-transform duration-300 ease-in-out
+          ${dark ? "bg-gray-800" : "bg-blue-200"}
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+          lg:translate-x-0
+        `}
       >
-        <LogOut size={20} />
-        Logout
-      </button>
-    </div>
+        {/* Mobile close button */}
+        <button
+          onClick={onClose}
+          className={`absolute top-3 right-3 p-1 rounded-lg lg:hidden ${
+            dark ? "hover:bg-gray-700 text-gray-300" : "hover:bg-blue-300 text-gray-700"
+          }`}
+        >
+          <X size={20} />
+        </button>
+
+        {/* Menu Items */}
+        <nav className="flex-1 overflow-y-auto mt-2">
+          <ul className="space-y-1">
+            {menuItems.map((item) => (
+              <li key={item.name}>
+                <Link
+                  to={item.path}
+                  onClick={handleNavClick}
+                  className={linkClass(item.path)}
+                >
+                  {item.icon}
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-4">
+            <h3 className={`text-sm font-semibold mb-2 ${dark ? "text-gray-400" : "text-gray-700"}`}>Tasks</h3>
+            <ul className="space-y-1">
+              {taskItems.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    to={item.path}
+                    onClick={handleNavClick}
+                    className={linkClass(item.path)}
+                  >
+                    {item.icon}
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-4">
+            <h3 className={`text-sm font-semibold mb-2 ${dark ? "text-gray-400" : "text-gray-700"}`}>Settings</h3>
+            <ul className="space-y-1">
+              {settingsItems.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    to={item.path}
+                    onClick={handleNavClick}
+                    className={linkClass(item.path)}
+                  >
+                    {item.icon}
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </nav>
+
+        <button
+          onClick={handleLogout}
+          className={`mt-4 flex items-center gap-2 p-2 rounded-lg transition-colors ${
+            dark ? "text-gray-200 hover:bg-gray-700" : "text-gray-800 hover:bg-blue-300"
+          }`}
+        >
+          <LogOut size={20} />
+          Logout
+        </button>
+      </div>
+    </>
   );
 };
 

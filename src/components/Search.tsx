@@ -38,8 +38,8 @@ const Search: React.FC = () => {
   };
 
   return (
-    <div className={`flex min-h-full w-full justify-center items-center p-4 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
-      <div className={`p-8 rounded-lg shadow-lg min-w-full ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+    <div className={`flex min-h-full w-full justify-center items-center p-2 sm:p-4 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      <div className={`p-4 sm:p-8 rounded-lg shadow-lg min-w-full ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
         <h2 className={`text-2xl font-bold mb-6 text-center ${theme === 'dark' ? 'text-white' : 'text-black'}`}>Search</h2>
 
         {/* Search Input and Button */}
@@ -49,8 +49,8 @@ const Search: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search todos..."
-            className={`flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              theme === 'dark' ? 'bg-gray-700 text-white' : 'bg-white'
+            className={`flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'
             }`}
           />
           <button
@@ -71,20 +71,18 @@ const Search: React.FC = () => {
                   theme === 'dark' ? 'bg-gray-700 border-gray-600 hover:bg-gray-600' : 'bg-white'
                 }`}
               >
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                   <span className={`${todo.completed ? 'line-through text-gray-500' : ''} ${
                     theme === 'dark' ? 'text-white' : 'text-black'
                   }`}>
                     {todo.title}
                   </span>
-                  <div className="flex gap-4">
-                    {/* Due Date */}
-                    <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>
+                  <div className="flex flex-wrap gap-3 text-sm">
+                    <span className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>
                       Due: {formatDate(todo.due_date)}
                     </span>
-                    {/* Status */}
-                    <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>
-                      Status: {todo.status}
+                    <span className={`capitalize ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>
+                      Status: {todo.status.replace(/_/g, ' ')}
                     </span>
                   </div>
                 </div>

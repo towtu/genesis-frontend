@@ -75,9 +75,9 @@ const Account: React.FC = () => {
   };
 
   return (
-    <div className={`flex min-h-full justify-center items-start mx-auto p-6 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+    <div className={`flex min-h-full justify-center items-start mx-auto p-3 sm:p-6 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
       {/* Main Content */}
-      <div className={`p-8 border rounded-lg shadow-sm w-full max-w-full ${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+      <div className={`p-4 sm:p-8 border rounded-lg shadow-sm w-full max-w-full ${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
         <h2 className={`text-2xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Profile</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

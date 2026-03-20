@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useRegister } from '../hooks/useRegister';
 
 const Register: React.FC = () => {
@@ -25,20 +26,20 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="bg-blue-200 flex items-center justify-center min-h-screen">
-      <div className="text-center">
-        <h1 className="text-5xl font-bold mb-8 mt-1 flex items-center justify-center gap-2">
+    <div className="bg-blue-200 flex items-center justify-center min-h-screen px-4 py-6">
+      <div className="text-center w-full max-w-md">
+        <h1 className="text-3xl sm:text-5xl font-bold mb-6 sm:mb-8 mt-1 flex items-center justify-center gap-2 flex-wrap">
           Welcome to
-          <img src="/sara.png" alt="Genesis Logo" className="w-72 h-16" />
+          <img src="/sara.png" alt="Genesis Logo" className="w-48 sm:w-72 h-auto" />
         </h1>
-        <div className="bg-white p-8 rounded-xl shadow-lg max-w-md mx-auto">
+        <div className="bg-white p-5 sm:p-8 rounded-xl shadow-lg w-full">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold">Sign-up now</h2>
             <div className="text-blue-700 text-3xl font-bold">G</div>
           </div>
           <form onSubmit={handleSubmit}>
             {error && <div className="text-red-500 mb-4">{error.message}</div>}
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <input
                 type="text"
                 placeholder="First Name"
@@ -82,15 +83,16 @@ const Register: React.FC = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="border border-gray-300 p-2 w-full rounded"
+                className="border border-gray-300 p-2 w-full rounded pr-10"
                 required
               />
-              <span
-                className="absolute right-3 top-3 text-gray-500 cursor-pointer"
+              <button
+                type="button"
+                className="absolute right-3 top-2.5 text-gray-500 cursor-pointer"
                 onClick={togglePasswordVisibility}
               >
-                {showPassword ? 'Hide' : 'Show'}
-              </span>
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
             <div className="mb-4 relative">
               <input
@@ -98,15 +100,16 @@ const Register: React.FC = () => {
                 placeholder="Confirm Password"
                 value={password2}
                 onChange={(e) => setPassword2(e.target.value)}
-                className="border border-gray-300 p-2 w-full rounded"
+                className="border border-gray-300 p-2 w-full rounded pr-10"
                 required
               />
-              <span
-                className="absolute right-3 top-3 text-gray-500 cursor-pointer"
+              <button
+                type="button"
+                className="absolute right-3 top-2.5 text-gray-500 cursor-pointer"
                 onClick={togglePasswordVisibility}
               >
-                {showPassword ? 'Hide' : 'Show'}
-              </span>
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
             <p className="text-xs text-gray-500 mb-4">
               Use 8 or more characters with a mix of letters, numbers & symbols

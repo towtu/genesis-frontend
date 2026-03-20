@@ -35,13 +35,17 @@ const CalendarView: React.FC = () => {
       const response = await api.get('/todo/');
       const todos: Todo[] = response.data;
 
-      const calendarEvents = todos.map((todo) => ({
-        title: todo.title,
-        start: new Date(todo.due_date),
-        end: new Date(todo.due_date),
-        allDay: true,
-        resource: todo,
-      }));
+      const calendarEvents = todos.map((todo) => {
+        const start = new Date(todo.due_date);
+        const end = new Date(start.getTime() + 60 * 60 * 1000); // 1 hour duration
+        return {
+          title: todo.title,
+          start,
+          end,
+          allDay: false,
+          resource: todo,
+        };
+      });
 
       setEvents(calendarEvents);
     } catch (error) {
@@ -50,16 +54,16 @@ const CalendarView: React.FC = () => {
   };
 
   return (
-    <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>
-      <div className={`flex-1 p-8 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>
-        <div className={`p-8 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
-          <h2 className={`text-2xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>Calendar</h2>
+    <div className={`flex min-h-full ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>
+      <div className={`flex-1 p-3 sm:p-8 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>
+        <div className={`p-3 sm:p-8 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+          <h2 className={`text-2xl font-bold mb-4 sm:mb-6 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>Calendar</h2>
           <Calendar
             localizer={localizer}
             events={events}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: 600 }}
+            style={{ height: 500 }}
             defaultView="month"
             views={['month', 'week', 'day']}
             eventPropGetter={() => ({

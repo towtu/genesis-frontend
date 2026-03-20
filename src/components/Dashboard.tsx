@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className={`flex min-h-full ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>
-      <div className={`p-6 rounded shadow-md flex-1 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+      <div className={`p-4 sm:p-6 rounded shadow-md flex-1 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
         <h2 className={`text-2xl mb-4 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>Dashboard</h2>
 
         {/* Navigation Boxes */}
@@ -102,12 +102,12 @@ const Dashboard: React.FC = () => {
                     theme === 'dark' ? 'bg-gray-600' : 'bg-white'
                   }`}
                 >
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
                     <div>
                       <p className={`text-lg font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>{todo.title}</p>
                       <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>Due: {formatDate(todo.due_date)}</p>
                     </div>
-                    <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>{todo.status}</span>
+                    <span className={`text-sm capitalize ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>{todo.status.replace(/_/g, ' ')}</span>
                   </div>
                 </li>
               ))}
