@@ -38,7 +38,7 @@ const Register: React.FC = () => {
             <div className="text-blue-700 text-3xl font-bold">G</div>
           </div>
           <form onSubmit={handleSubmit}>
-            {error && <div className="text-red-500 mb-4">{error.message}</div>}
+            {error && <div className="text-red-500 mb-4">{error?.response?.data?.detail || error?.response?.data?.password?.[0] || error?.response?.data?.email?.[0] || 'Registration failed. Please check your inputs.'}</div>}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <input
                 type="text"

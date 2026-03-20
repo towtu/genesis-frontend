@@ -40,7 +40,7 @@ const Login: React.FC = () => {
         <div className="w-full lg:w-1/2 flex justify-center items-center">
           <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 w-full max-w-lg">
             <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Sign In</h2>
-            {error && <div className="text-red-500 mb-4 text-center">{error.message}</div>}
+            {error && <div className="text-red-500 mb-4 text-center">{error?.response?.data?.detail || 'Invalid email or password.'}</div>}
             <form onSubmit={handleSubmit} className="space-y-5">
               <input
                 type="email"
