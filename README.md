@@ -95,6 +95,13 @@ The base API URL is configured with the `VITE_BACK_END_BASE_URL` environment var
   - `App.tsx` - route configuration
   - `main.tsx` - app bootstrap
 
+  ### Contribution Guidelines
+
+- Follow the existing code style and TypeScript conventions
+- Make sure the app builds without errors (`npm run build`)
+- Keep pull requests focused — one feature or fix per PR
+- Write clear, descriptive commit messages
+
 ## Notes
 
 - Ensure the backend supports JWT access tokens and that they are stored in `localStorage`.
